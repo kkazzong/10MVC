@@ -1,2 +1,7 @@
 /com/
+<<<<<<< HEAD
+=======
+/config/
+/log4j.properties
+>>>>>>> refs/heads/new/product
 /sql/

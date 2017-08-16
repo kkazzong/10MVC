@@ -12,6 +12,14 @@
 			classpath:config/context-transaction.xml
 		</param-value>
   </context-param>
+  
+  <!--  파일 저장 장소 -->
+	<context-param>
+		<param-name>saveDirectory</param-name>
+		<param-value>C:\\Users\\1\\git\\09MVC\\09.Model2MVCShop(jQuery)\\WebContent\\images\\uploadFiles\\</param-value>
+		<!-- <param-value>\\images\\uploadFiles\\</param-value> -->
+	</context-param>
+	
   <filter>
     <filter-name>encodingFilter</filter-name>
     <filter-class>	org.springframework.web.filter.CharacterEncodingFilter</filter-class>
