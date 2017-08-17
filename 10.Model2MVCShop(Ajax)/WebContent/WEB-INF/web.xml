@@ -16,7 +16,7 @@
   <!--  파일 저장 장소 -->
 	<context-param>
 		<param-name>saveDirectory</param-name>
-		<param-value>C:\\Users\\1\\git\\09MVC\\09.Model2MVCShop(jQuery)\\WebContent\\images\\uploadFiles\\</param-value>
+		<param-value>C:\\Users\\1\\git\\10MVC\\10.Model2MVCShop(Ajax)\\WebContent\\images\\uploadFiles\\</param-value>
 		<!-- <param-value>\\images\\uploadFiles\\</param-value> -->
 	</context-param>
 	

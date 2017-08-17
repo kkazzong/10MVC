@@ -237,36 +237,12 @@ public class ProductController {
 			throws Exception {
 
 		System.out.println("@ listProduct @");
-		// System.out.println(menu);
 		System.out.println(search);
 
 		if (search.getCurrentPage() == 0) {
 			search.setCurrentPage(1);
 		}
 		search.setPageSize(pageSize);
-
-		/*if (search.getSearchCondition() != null && search.getSearchCondition().equals("1")) {
-			byte[] keyword = search.getSearchKeyword().getBytes();
-			for (byte bytes : keyword) {
-				System.out.println("searchKeyword 확인(문자) : " + bytes);
-				if (bytes >= 48 && bytes <= 57) { // 숫자일때
-					search.setSearchKeyword("");
-					search.setSearchKeywordPrice("");
-				}
-			}
-		} else if (search.getSearchCondition() != null && search.getSearchCondition().equals("2")) {
-			byte[] keyword = search.getSearchKeyword().getBytes();
-			for (byte bytes : keyword) {
-				System.out.println("searchKeyword 확인(숫자) : " + bytes);
-				if (bytes < 48 | bytes > 57) { // 문자일때
-					search.setSearchKeyword("");
-					search.setSearchKeywordPrice("");
-				}
-			}
-		}*/
-		
-		System.out.println("change......");
-		System.out.println(search);
 
 		Map<String, Object> map = productService.getProductList(search);
 
