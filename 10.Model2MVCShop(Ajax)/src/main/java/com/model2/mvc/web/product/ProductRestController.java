@@ -125,14 +125,13 @@ public class ProductRestController {
 		return returnProduct;
 	}
 	
-	@RequestMapping(value="json/getProduct/{prodNo}/{menu}", method=RequestMethod.GET)
-	public Product getProduct(@PathVariable int prodNo,
-											  @PathVariable String menu) throws Exception {
+	@RequestMapping(value="json/getProduct/{prodNo}", method=RequestMethod.GET)
+	public Product getProduct(@PathVariable int prodNo) throws Exception {
 		
 		System.out.println(">>[From Client]<<");
-		System.out.println("prodNo : "+prodNo+", menu : "+menu);
+		System.out.println("prodNo : "+prodNo);
 		
-		if(menu.equals("search")) {
+		//if(menu.equals("search")) {
 			
 			Product returnProduct = productService.getProduct(prodNo);
 			System.out.println(">>>>[To Client]<<<<");
@@ -140,13 +139,13 @@ public class ProductRestController {
 			
 			return returnProduct; 
 			
-		} else if(menu.equals("manage")) {
+		//} else if(menu.equals("manage")) {
 			
 			//tmp
 			//return this.updateProductView();
 			
-		}
-		return null;
+		//}
+		//return null;
 	}
 	
 //	@RequestMapping(value="json/listProduct/*", method=RequestMethod.GET)
@@ -162,6 +161,7 @@ public class ProductRestController {
 		search.setPageSize(pageSize);
 		*/
 		if(search != null) {
+			System.out.println("json/listProduct POST");
 			if(search.getCurrentPage() == 0) {
 				search.setCurrentPage(1);
 			}
@@ -176,19 +176,56 @@ public class ProductRestController {
 		Map<String, Object> map = productService.getProductList(search);
 		
 		Page page = new Page(search.getCurrentPage(), (Integer)map.get("totalCount"), pageUnit, pageSize);
-		System.out.println(page);
+		map.put("resultPage", page);
 		
 		System.out.println(">>[To Client]<<");
 		System.out.println(map.get("totalCount"));
 		System.out.println(map.get("productList"));
+		System.out.println(map.get("resultPage"));
 		
 		return map;
 	}
 	
-	@RequestMapping(value="json/updateProduct", method=RequestMethod.GET)
-	public Product updateProductView() throws Exception {
+	@RequestMapping(value="json/listProductAuto", method=RequestMethod.POST)
+//	public Map listProduct(/*@PathVariable String menu*/) throws Exception {
+	public List<Product> listProductAuto(@RequestBody(required=false) Search search) throws Exception {
 		
-		int prodNo = 10001;
+		System.out.println(">>[From Client]<<");
+		System.out.println(search);
+		/*
+		Search search = new Search();
+		search.setCurrentPage(1);
+		search.setPageSize(pageSize);
+		*/
+		if(search != null) {
+			System.out.println("json/listProductAuto POST");
+			if(search.getCurrentPage() == 0) {
+				search.setCurrentPage(1);
+			}
+			search.setPageSize(pageSize);
+		} else {
+			search = new Search();
+			if(search.getCurrentPage() == 0) {
+				search.setCurrentPage(1);
+			}
+			search.setPageSize(pageSize);
+		}
+		Map<String, Object> map = productService.getProductList(search);
+		List<Product> list = (List<Product>)map.get("productList");
+		
+		Page page = new Page(search.getCurrentPage(), (Integer)map.get("totalCount"), pageUnit, pageSize);
+		System.out.println(page);
+		
+		System.out.println(">>[To Client]<<");
+		System.out.println(list);
+		
+		return list;
+	}
+	
+	@RequestMapping(value="json/updateProduct/{prodNo}", method=RequestMethod.GET)
+	public Product updateProductView(@PathVariable int prodNo) throws Exception {
+		
+		//int prodNo = 10001;
 		Product returnProduct = productService.getProduct(prodNo);
 		
 		System.out.println(">>>>[To Client]<<<<");

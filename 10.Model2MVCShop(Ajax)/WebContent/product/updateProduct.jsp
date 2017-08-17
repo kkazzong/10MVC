@@ -102,9 +102,10 @@ function fncUpdateProduct(){
 			}
 		});
 		
-		$(".ct_btn01:contains('秒家')").bind('click', function(){
+		$(".ct_btn01:contains('秒家')").on('click', function(){
 			console.log($(this).html());
-			window.history.back();
+			//window.history.back();
+			history.go(-1);
 		});
 		
 		$(".ct_btn01:contains('昏力')").bind('click', function(){
@@ -279,7 +280,6 @@ function fncUpdateProduct(){
 						<img src="/images/ct_btnbg01.gif"width="17" height="23"/>
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-						<!-- <a href="javascript:history.go(-1)">秒家</a> -->
 						秒家
 					</td>
 					<td width="14" height="23">
