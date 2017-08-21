@@ -20,6 +20,7 @@
 		<result property="paymentOption" column="payment_option" jdbcType="VARCHAR"/>
 		<result property="receiverDate" column="receiver_date" jdbcType="DATE"/>
 		<result property="orderDate" column="order_date" jdbcType="DATE"/>
+		<!-- <result property="review" column/> -->
 		<association property="purchaseProd" javaType="com.model2.mvc.service.domain.Product">
 			<id property="prodNo" column="prod_no" jdbcType="NUMERIC"/>
 			<result property="prodName" column="prod_name" jdbcType="VARCHAR"/>

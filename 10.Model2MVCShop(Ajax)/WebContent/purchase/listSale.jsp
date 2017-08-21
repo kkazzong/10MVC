@@ -18,17 +18,31 @@
 	
 	$(function(){
 		
+		$(".ct_list_pop td:nth-child(5)").css("color","magenta");
+		
 		$("span").css("color","magenta");
 		
 		$("span").bind('click', function(elem){
 			
-			console.log($(this).html());
+			//console.log($(this).html());
 			
 			console.log($("input:hidden[name='pNo']", this).val());
 			var result = confirm("물건을 배송하시겠습니까?");
 			
 			if(result) {
-				self.location = "/purchase/updateTranCodeByProd?prodNo="+$("input:hidden[name='pNo']", this).val()+"&tranCode=2";
+				//self.location = "/purchase/updateTranCodeByProd?prodNo="+$("input:hidden[name='pNo']", this).val()+"&tranCode=2";
+				
+				$.ajax({
+					url : "/purchase/json/updateTranCode/"+$("input:hidden[name='pNo']", this).val()+"/2",
+					method : "get",
+					dataType : "json",
+					success : function(JSONData, status){
+						console.log(status);
+						console.log(JSON.stringify(JSONData));
+						$("#"+JSONData.tranNo).text("배송중");
+					}
+				})
+				
 			} else {
 				return;
 			}
@@ -136,9 +150,11 @@
 		<td align="left">${purchase.purchaseProd.regDate}</td>
 		<td></td>
 		<td align="left">
-		<c:choose>
+		<%-- <p>구매완료 <span><input type="hidden" name="pNo" value="${purchase.tranNo}">▶배송하기</span> </p> --%>
+		 <p id="${purchase.tranNo}">
+		 <c:choose>
 			<c:when test="${purchase.tranCode == 1}">
-				구매완료 <span><input type="hidden" name="pNo" value="${purchase.purchaseProd.prodNo}">▶배송하기</span> 
+				구매완료 <span><input type="hidden" name="pNo" value="${purchase.tranNo}">▶배송하기</span> 
 			</c:when>
 			<c:when test="${purchase.tranCode == 2}">
 				배송중
@@ -147,6 +163,7 @@
 				배송완료
 			</c:when>
 		</c:choose>
+		</p>
 		</td>	
 	</tr>
 	<tr>

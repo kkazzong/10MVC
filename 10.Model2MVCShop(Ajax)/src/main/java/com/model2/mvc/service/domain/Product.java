@@ -109,6 +109,10 @@ public class Product implements Serializable{
 				+ ", proTranCode=" + proTranCode + "]";
 	}
 	
+
+
+	
+	
 	
 	
 //	public Product(String fileName, String manuDate, int price, String prodDetail, String prodName, int prodNo,

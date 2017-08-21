@@ -142,6 +142,66 @@
 	
 	$(function(){
 		
+		
+		
+		//무한 scroll
+		$(window).scroll(function(){
+			console.log("scrolling.............");
+			
+			console.log($(document).height());
+			console.log($(window).height());
+			console.log($(window).scrollTop());
+			
+			if($(window).scrollTop() >= 81) {
+				$.ajax({
+					
+					url : "/product/json/listProductAuto",
+					method : "post",
+					headers : {
+						"Accept" : "application/json",
+						"Content-Type" : "application/json"
+					},
+					data : JSON.stringify({
+						"currentPage" : 2
+					}),
+					dataType : "json",
+					success : function(JSONData, status){
+						//alert(status);
+						//console.log(JSON.stringify(JSONData));
+						//console.log("productList===>"+JSONData.length);
+						
+						for(var i = 0; i < JSONData.length; i++) {
+							var htmlStr = "<td align='center'>"+(i+9)+"</td>"
+												+"<td align='center'>"+JSONData[i].prodName+"</td>"
+												+"<td align='center'>"+JSONData[i].price+"원</td>"
+												+"<td align='center'>"+JSONData[i].regDate+"</td>";
+							console.log($(".ct_list_pop:last-child").html());
+							//$(".ct_list_pop tr:last").append(htmlStr);
+						}
+						
+					}
+				
+				})
+			}
+			
+		});
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		//get 방식 접근 시
 		var resultHtml = "전체 "+${resultPage.totalCount}+" 건수, 현재 "+${resultPage.currentPage}+"페이지";
 		$("#result").html(resultHtml);
@@ -438,7 +498,7 @@
 	</tr>
 </table>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
+<table border="0" cellspacing="0" cellpadding="0" style="margin-top:10px; overflow:scroll">
 	<tr>
 		<td></td>
 		<td align="left">
@@ -508,7 +568,7 @@
 </table>
 
 
-<div style="width:98%;">
+<!-- <div style="width:98%;"> -->
 <table width="70%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;" align="center">
 	<%-- <tr id="result">
 		<td colspan="11" >전체 ${resultPage.totalCount} 건수, 현재 ${resultPage.currentPage} 페이지</td>
@@ -639,7 +699,7 @@
 	</tr>	 -->
 	</c:forEach>
 </table>
-</div>
+<!-- </div> -->
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>

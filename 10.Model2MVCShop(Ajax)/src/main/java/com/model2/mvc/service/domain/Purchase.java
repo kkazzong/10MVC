@@ -86,6 +86,7 @@ public class Purchase {
 	public void setTranNo(int tranNo) {
 		this.tranNo = tranNo;
 	}
+	
 
 	@Override
 	public String toString() {

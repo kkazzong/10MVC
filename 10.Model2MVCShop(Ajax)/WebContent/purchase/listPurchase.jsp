@@ -16,7 +16,10 @@
 <title>구매 목록조회</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
-<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<link rel="stylesheet" href="/css/jquery-ui.css" type="text/css">
+<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
 
 	function fncGetList(currentPage) {
@@ -25,13 +28,108 @@
 					 .attr("action","/purchase/listPurchase")
 					 .submit();
 	}
-	
+
+	function fncUpdatePurchaseView(tranNo) {
+		console.log("tranNo====>"+tranNo);
+		console.log($("form[name='updateForm']").html());
+		//form modal dialog
+		var dialog = $("form[name='updateForm']").dialog({
+			autoOpen : false,
+			height : 500,
+			width : 350,
+			modal : true,
+			buttons : {
+				"수정하기" : function(){
+					/* self.location="/purchase/updatePurchase" */
+					$("form[name='updateForm']").attr("method","post").attr("action","/purchase/updatePurchase").submit();
+				},
+				cancel : function(){
+					dialog.dialog("close");
+				}
+			},
+			close : function(){
+				//$("form[name='updateForm']").reset();
+				dialog.dialog("close");
+			},
+			open : function(){
+				console.log("opne!")
+				
+				$.ajax({
+					
+					url : "/purchase/json/getPurchase/"+tranNo,
+					method : "get",
+					dataType : "json",
+					success : function(JSONData, status) {
+						console.log(status);
+						console.log(JSON.stringify(JSONData));
+						
+						var htmlStr = "<input type='hidden' name='tranNo' value='"+JSONData.tranNo+"'/>";
+						$("form[name='updateForm']").append(htmlStr);
+						$("#purchaseProd").html("<b>"+JSONData.purchaseProd.prodName)
+						$("b").css("color","red")
+						$("input:text[name='receiverName']").val(JSONData.receiverName);
+						$("input:text[name='receiverPhone']").val(JSONData.receiverPhone);
+						$("input:text[name='receiverAddr']").val(JSONData.receiverAddr);
+						$("input:text[name='receiverRequest']").val(JSONData.receiverRequest);
+						$("input:text[name='receiverDate']").val(JSONData.receiverDate);
+						$("input:text[name='receiverDate']").datepicker().bind('change',function(){
+							$(this).datepicker("option","dateFormat","yy-mm-dd").val();
+						})
+						
+					}
+					
+				})
+				
+			}
+		}); 
+		dialog.dialog("open");
+	}
 	
 	$(function(){
+		
+		$(".ct_list_pop:nth-child(4n+6)").css("background-color","#F7CAC9");
 		
 		console.log($($(".ct_list_pop td:nth-child(3)")[1]).html());
 		$(".ct_list_pop td:nth-child(7)").css("color", "teal");
 		
+		$("form[name='updateForm']").hide()
+		
+		/* console.log($("form[name='updateForm']").html());
+		//form modal dialog
+		var dialog = $("form[name='updateForm']").dialog({
+			autoOpen : false,
+			height : 500,
+			width : 350,
+			modal : true,
+			buttons : {
+				"수정하기" : function(){
+					dialog.dialog("submit");
+				},
+				cancel : function(){
+					dialog.dialog("close");
+				}
+			},
+			close : function(){
+				$("form[name='updateForm']").reset();
+			},
+			open : function(){
+				console.log("opne!")
+				
+				$.ajax({
+					
+					url : "/purchase/json/getPurchase/"+tranNo,
+					method : "get",
+					dataType : "json",
+					success : function(JSONData, status) {
+						alert(status);
+						console.log(JSON.stringify(JSONData));
+						//console.log($("form[name='det']"))
+					}
+					
+				})
+				
+			}
+		});  */
 		
 		/* $(".ct_list_pop td:nth-child(7)").bind('click', function(){
 			
@@ -43,17 +141,22 @@
 		}); */
 		
 		//배송중일때 상품 수정 불가
+		//상품이름 클릭 수정
 		$("span").bind('click', function(){
 			console.log($(this).html());
 			console.log("parent====>"+$(this).parent().index());
 			console.log("sibling/tranNo====>"+$("input:hidden[name='tNo']",this).val());
 			//$(this).siblings('.tr_no').text().trim()
-			self.location="/purchase/updatePurchaseView?tranNo="+$("input:hidden[name='tNo']",this).val();
+			//self.location="/purchase/updatePurchaseView?tranNo="+$("input:hidden[name='tNo']",this).val();
+			fncUpdatePurchaseView($("input:hidden[name='tNo']",this).val());
+			//dialog.dialog("open");
 		});
 		
+		console.log($("p").html)
 		
 		//물건도착
 		$("p").css("color","magenta");
+		
 		
 		$("p").bind('click', function(){
 			
@@ -61,20 +164,74 @@
 			
 			console.log($("input:hidden[name='tNo']",this).val());
 			
-			var result = confirm("물건이 도착했습니까?");
-			if(result) {
-				self.location="/purchase/updateTranCode?tranNo="+$("input:hidden[name='tNo']",this).val()+"&tranCode=3";
-			} else {
-				return;
+			if($(this).text().trim() != 'review') {
+	 			var result = confirm("물건이 도착했습니까?");
+				
+				if(result) {
+					//self.location="/purchase/updateTranCode?tranNo="+$("input:hidden[name='tNo']",this).val()+"&tranCode=3";
+					
+					$.ajax({
+						
+						url : "/purchase/json/updateTranCode/"+$("input:hidden[name='tNo']",this).val()+"/3",
+						method : "get",
+						dataType : "json",
+						success : function(JSONData, status){
+							console.log(status);
+							console.log(JSON.stringify(JSONData));
+							console.log($("#"+JSONData.tranNo).next().html().trim());
+							
+							$("#"+JSONData.tranNo).next().remove();
+							$("#"+JSONData.tranNo).html("<a>review</a>");
+						}
+						
+					})
+					
+				} else {
+					return;
+				}
 			}
+			
+			$("a").bind("click", function(){
+				console.log($(this).html())
+				self.location = "/purchase/reviewProduct.html";
+			})
 			
 		});
 		
 	});
 </script>
+
+<style type="text/css">
+	label, input { display:block; } 
+    input.text { margin-bottom:12px; width:90%; padding: .4em; }
+    fieldset { padding:0; border:0; margin:auto;}
+</style>
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
+
+<!-- 수정 dialog form -->
+<div class="ui-widget">
+<form name="updateForm" title="상품수정">
+	<fieldset>
+		<label for="상품명">상품명</label>
+		<span id="purchaseProd"></span>
+		<label for="이름">이름</label>
+		<input type="text" name="receiverName" class="text ui-widget-content ui-corner-all">
+		<label for="연락처">연락처</label>
+		<input type="text" name="receiverPhone" class="text ui-widget-content ui-corner-all">
+		<label for="주소">주소</label>
+		<input type="text" name="receiverAddr" class="text ui-widget-content ui-corner-all">
+		<label for="요청사항">요청사항</label>
+		<input type="text" name="receiverRequest" class="text ui-widget-content ui-corner-all">
+		<label for="배송희망날짜">배송희망날짜</label>
+		<input type="text" name="receiverDate" class="text ui-widget-content ui-corner-all">
+		
+		<input type="submit" value="수정하기" style="position:absolute; top:-1000px">
+	</fieldset>
+</form>
+</div>
+
 
 <div style="width: 98%; margin-left: 10px;">
 
@@ -170,17 +327,17 @@
 		</td>
 		<td></td>
 		<td align="center">
+		<p id="${purchase.tranNo}">
 			<c:if test="${purchase.tranCode == 2 }">
 				<%-- <a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=3">물건도착</a> --%>
-				<p><input type="hidden" name="tNo" value="${purchase.tranNo}">물건도착</p>
+				<p><input type="hidden" name="tNo" value="${purchase.tranNo}">물건도착
 			</c:if>
 			<c:if test="${purchase.tranCode < 2}">
 				대기
 			</c:if>
 			<c:if test="${purchase.tranCode > 2}">
-				리뷰남기기
+				<a>review</a>
 			</c:if>
-			
 		</td>
 		<td></td>
 	</tr>
